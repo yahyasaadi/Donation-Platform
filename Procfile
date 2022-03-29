@@ -1,0 +1,1 @@
+web : gunicorn automatedDonation.wsgi --log-file -
