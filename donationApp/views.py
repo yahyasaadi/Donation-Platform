@@ -9,46 +9,6 @@ from rest_framework import status
 def home(request):
   return render(request, 'home.html')
 
-# Charities
-class CharityList(APIView):
-  def get(self, request, format=None):
-    all_charities = Charity.objects.all()
-    serializers = CharitySerializer(all_charities,many=True)
-    return Response(serializers.data)
-  
-  def post(self, request, format=None):
-    serializers = CharitySerializer(data=request.data)
-    if serializers.is_valid():
-      serializers.save()
-      return Response(serializers.data,status=status.HTTP_201_CREATED)
-    return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
-
-class CharityDescription(APIView):
-  def get_charity(self, pk):
-        try:
-            return Charity.objects.get(pk=pk)
-        except Charity.DoesNotExist:
-            return Http404
-
-  def get(self, request, pk, format=None):
-      charity = self.get_charity(pk)
-      serializers = CharitySerializer(charity)
-      return Response(serializers.data)
-
-  def put(self, request, pk, format=None):
-    charity = self.get_charity(pk)
-    serializers = CharitySerializer(charity, request.data)
-    if serializers.is_valid():
-        serializers.save()
-        return Response(serializers.data)
-    else:
-        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
-
-  def delete(self, request, pk, format=None):
-    charity = self.get_charity(pk)
-    charity.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
-
 # Donors
 class DonorList(APIView):
   def get(self, request, format=None):
@@ -140,6 +100,7 @@ class UsersList(APIView):
     return Response(serializers.data)
 
   def post(self, request, format=None):
+    # request.data['user'] = user
     serializers = UsersSerializer(data=request.data)
     if serializers.is_valid():
       serializers.save()
@@ -170,4 +131,44 @@ class UserDescription(APIView):
   def delete(self, request, pk, format=None):
     user = self.get_user(pk)
     user.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+# Charities
+class CharityList(APIView):
+  def get(self, request, format=None):
+    all_charities = Charity.objects.all()
+    serializers = CharitySerializer(all_charities,many=True)
+    return Response(serializers.data)
+  
+  def post(self, request, format=None):
+    serializers = CharitySerializer(data=request.data)
+    if serializers.is_valid():
+      serializers.save()
+      return Response(serializers.data,status=status.HTTP_201_CREATED)
+    return Response(serializers.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class CharityDescription(APIView):
+  def get_charity(self, pk):
+        try:
+            return Charity.objects.get(pk=pk)
+        except Charity.DoesNotExist:
+            return Http404
+
+  def get(self, request, pk, format=None):
+      charity = self.get_charity(pk)
+      serializers = CharitySerializer(charity)
+      return Response(serializers.data)
+
+  def put(self, request, pk, format=None):
+    charity = self.get_charity(pk)
+    serializers = CharitySerializer(charity, request.data)
+    if serializers.is_valid():
+        serializers.save()
+        return Response(serializers.data)
+    else:
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+
+  def delete(self, request, pk, format=None):
+    charity = self.get_charity(pk)
+    charity.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)

@@ -37,13 +37,15 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, user_name, password, **extra_fields)
 
 class CustomUser(AbstractBaseUser,PermissionsMixin):
+    is_charity = models.BooleanField(default=False)
+    is_donor = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
     user_name = models.CharField(max_length=150, unique=True)
     email = models.EmailField(_('email address'), unique=True)
     last_name = models.CharField(max_length=150,default='Mwende')
     first_name = models.CharField(max_length=150, default='Grace')
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
 
@@ -56,11 +58,12 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
         return self.email
 
 class Charity(models.Model):
-    charity = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
-
+    users = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
+    location = models.CharField(max_length=150,default='Nairobi')
 class Donor(models.Model):
     donor = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, blank=True, null=True)
 
 class Donations(models.Model):
     donor = models.ForeignKey(Donor, on_delete=models.CASCADE)
     charity = models.ForeignKey(Charity, on_delete=models.CASCADE)
+    amount = models.IntegerField(blank=True, null=True)
