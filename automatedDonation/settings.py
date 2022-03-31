@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'donationApp',
+    'paymentGateway',
     'rest_framework',
     'rest_framework.authtoken'
 ]
@@ -87,10 +88,8 @@ WSGI_APPLICATION = 'automatedDonation.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'donation',
-        'USER': 'moringa',
-        'PASSWORD':'Access',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
